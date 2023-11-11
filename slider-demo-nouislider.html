@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retirement Planning Buckets</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
+<script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wnumb@1.2.0/wNumb.min.js"></script>
+<style>
+  .bucket-slider {
+    height: 300px; /* Adjust the height of the buckets */
+    margin: 30px;
+  }
+  
+  .noUi-vertical .noUi-handle {
+    width: 20px;
+    height: 20px;
+    left: -10px;
+    top: -10px;
+    border: none;
+    background-color: #555;
+    cursor: pointer;
+  }
+
+  .noUi-vertical .noUi-connect {
+    background-image: url('dollar-fill-small.png');
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-color: #0f0;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    width:50px;
+  }
+
+  .noUi-vertical .noUi-connects {
+    background-size: auto;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    width:50px;
+  }
+  
+  .noUi-vertical .noUi-origin {
+    bottom: 0; /* Flip the direction of the slider */
+  }
+</style>
+</head>
+<body>
+
+<div id="savingsBucket" class="bucket-slider"></div>
+<div id="investmentBucket" class="bucket-slider"></div>
+<div id="emergencyBucket" class="bucket-slider"></div>
+
+<script>
+  var sliders = document.getElementsByClassName('bucket-slider');
+
+  for (var i = 0; i < sliders.length; i++) {
+    noUiSlider.create(sliders[i], {
+      start: [0],
+      orientation: 'vertical',
+      connect: 'lower',
+      direction: 'rtl', // Right to left for the fill to start from the bottom
+      range: {
+        'min': [0],
+        'max': [100]
+      },
+      pips: {
+        mode: 'values',
+        values: [25, 50, 75, 100],
+        density: 4
+      },
+      format: wNumb({
+        decimals: 0
+      })
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retirement Planning Buckets</title>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<style>
+    #slider-vertical {
+        width:100px;
+        height:200px
+    }
+
+    #slider-filled {
+        position: absolute;
+        bottom: 0;
+        width:100%;
+        background: url('stack_of_money_recurring.png') repeat-y;
+        background-size: 100% auto; /* This ensures the image covers the width */
+        background-position: bottom; /* Aligns the image to the bottom */
+        background-clip: content-box; /* Ensures the background is only within the content box */
+        z-index: 2
+    }
+
+    #slider-vertical .ui-slider-handle {
+        width: 100%; /* Set to the width of the slider bar */
+        left: 0; /* Align to the left edge */
+        margin-left: 0; /* Remove any default margins */
+    }
+</style>
+</head>
+<body>
+    <div id="slider-vertical">
+        <div id="slider-filled"></div>
+    </div>
+    <script>
+        $( function() {
+            $( "#slider-vertical" ).slider({
+                orientation: "vertical",
+                range: "min",
+                min: 0,
+                max: 100,
+                value: 34,
+                step: 1
+                slide: function( event, ui ) {
+                    // Calculate the height of the filled area based on the slider value
+                    var percentage = ui.value;
+                    var heightFilled = (percentage / 100) * $("#slider-vertical").height();
+                    $("#slider-filled").height(heightFilled);
+                },
+                create: function(event, ui) {
+                    // Set the initial height of the filled element
+                    var initialValue = $("#slider-vertical").slider("value");
+                    var initialHeight = (initialValue / 100) * $("#slider-vertical").height();
+                    $("#slider-filled").height(initialHeight);
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

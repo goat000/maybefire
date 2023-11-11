@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRetire Drawdown Strategizer</title>
+    <link rel="stylesheet" href="drawdown.css">
+</head>
+<body>
+    <header>
+        <h1>SmartRetire Drawdown Strategizer</h1>
+        <h2>Maximize Your Retirement Savings, Minimize Taxes</h2>
+    </header>
+
+    <section id="introduction">
+        <!-- Introduction content goes here -->
+    </section>
+
+    <section id="retirement-form">
+        <h3>Enter Your Retirement Savings Details</h3>
+        <form onsubmit="compute(); saveFormData(); return false;">
+            <fieldset>
+                <legend>Personal Information</legend>
+                <label for="current-age">Current Age:</label>
+                <input type="number" id="current-age" name="current_age" min="1" required>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Desired Annual Spending</legend>
+                <label for="current-year-spending">Desired Spending in the Current Year:</label>
+                <input type="number" id="current-year-spending" name="current_year_spending" min="0" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Roth Accounts</legend>
+                <label for="roth-ira">Roth IRA Balance:</label>
+                <input type="number" id="roth-ira" name="roth_ira_balance" required>
+                <label for="roth-401k">Roth 401(k)/403(b) Balance:</label>
+                <input type="number" id="roth-401k" name="roth_401k_balance" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Traditional Retirement Accounts</legend>
+                <label for="traditional-ira">Traditional IRA Balance:</label>
+                <input type="number" id="traditional-ira" name="traditional_ira_balance" required>
+                <label for="401k">401(k)/403(b) Balance:</label>
+                <input type="number" id="401k" name="four01k_balance" required>
+                <label for="other-pre-tax">Other Pre-Tax Retirement Accounts:</label>
+                <input type="number" id="other-pre-tax" name="other_pretax_accounts_balance" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Taxable Brokerage Accounts</legend>
+                <label for="taxable-accounts">Total Balance:</label>
+                <input type="number" id="taxable-accounts" name="taxable_accounts_balance" required>
+                
+                <label for="taxable-accounts-basis">Basis:</label>
+                <input type="number" id="taxable-accounts-basis" name="taxable_accounts_basis" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Health Savings Accounts (HSA)</legend>
+                <label for="hsa">HSA Balance:</label>
+                <input type="number" id="hsa" name="hsa_balance" required>
+            </fieldset>
+
+            <input type="submit" value="Submit">
+        </form>
+    </section>
+
+    <canvas id="myChart" width="400" height="400"></canvas>
+
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="drawdown.js"></script>
+</body>
+</html>

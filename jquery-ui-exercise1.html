@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retirement Planning Buckets</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+        .slider-container {
+            float: left;
+            margin-right: 10px;
+            width: 100px;
+        }
+
+        .slider-vertical {
+            width: 100px;
+            height: 200px;
+            margin-top: 20px;
+        }
+
+        .slider-filled {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: url('stack_of_money_recurring.png') repeat-y;
+            background-size: 100% auto;
+            background-position: bottom;
+            background-clip: content-box;
+            z-index: 2;
+        }
+
+        .slider-vertical .ui-slider-handle {
+            width: 100%;
+            left: 0;
+            margin-left: 0;
+        }
+
+        .slider-label {
+            height: 40px; /* Adjust the height as needed to fit the largest label */
+            text-align: center;
+            margin-bottom: 5px; /* Add some space between the label and the slider */
+            overflow: hidden; /* Prevents text from overflowing the fixed height */
+        }
+
+        .slider-value {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        input.slider-value-input {
+            width: 100%;
+            text-align: center;
+        }
+
+        .bucket {
+            border-top: 100px solid black;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            height: 0;
+            width: 100px;
+        }
+
+        /* .bucket-fill {
+            background-color: blue;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+        } */
+    </style>
+</head>
+<body>
+
+    <div id="sliders">
+        <div class="slider-container">
+            <div class="slider-label">Year 1 Withdrawal</div>
+            <div id="slider-vertical-0" class="slider-vertical">
+                <div id="slider-filled-0" class="slider-filled"></div>
+            </div>
+            <input type="text" id="slider-value-1" class="slider-value-input"/>
+        </div>
+        <div class="slider-container">
+            <div class="slider-label">Year 2 Withdrawal</div>
+            <div id="slider-vertical-1" class="slider-vertical">
+                <div id="slider-filled-1" class="slider-filled"></div>
+            </div>
+            <input type="text" id="slider-value-2" class="slider-value-input"/>
+        </div>
+        <div class="slider-container">
+            <div class="slider-label">Year 3 Withdrawal</div>
+            <div id="slider-vertical-2" class="slider-vertical">
+                <div id="slider-filled-2" class="slider-filled"></div>
+            </div>
+            <input type="text" id="slider-value-2" class="slider-value-input"/>
+        </div>
+    </div>
+
+    <div id="zero-percent-bucket" class="bucket">WTF
+    </div>
+
+    <script>
+        $(function() {
+            // var labels = [
+            //     'Year 1 withdrawal', 'Year 2 withdrawal', 'Year 3 withdrawal',
+            //     'Taxed at 0%', 'Taxed at 10%', 'Taxed at 12%', 'Total Tax'
+            // ];
+
+            labels.forEach(function(label, index) {
+                var sliderId = 'slider-vertical-' + index;
+                // var sliderFilledId = 'slider-filled-' + index;
+                // var sliderValueId = 'slider-value-' + index;
+        
+                // var textToAppend = '<div class="slider-container">' +
+                //         '<div class="slider-label">' + label + '</div>' +
+                //         '<div id="' + sliderId + '" class="slider-vertical">' +
+                //             '<div id="' + sliderFilledId + '" class="slider-filled"></div>' +
+                //         '</div>' +
+                //         '<input type="text" id="' + sliderValueId + '" class="slider-value-input"'
+                // if (index < 3) {
+                //     textToAppend += '/>'
+                // }
+                // else {
+                //     textToAppend += ' readonly />'
+                // }
+                // textToAppend += '</div>'
+
+                // if (index > 3) {
+                //     $('#sliders').append(textToAppend);
+                // }
+
+                $('#' + sliderId).slider({
+                    orientation: "vertical",
+                    range: "min",
+                    min: 0,
+                    max: 100,
+                    value: 34,
+                    step: 1,
+                    slide: function(event, ui) {
+                        var percentage = ui.value;
+                        var heightFilled = (percentage / 100) * $(this).height();
+                        $(this).children('.slider-filled').height(heightFilled);
+                        $('#' + sliderValueId).val(ui.value);
+                    },
+                    create: function(event, ui) {
+                        var initialValue = $(this).slider("value");
+                        var initialHeight = (initialValue / 100) * $(this).height();
+                        $(this).children('.slider-filled').height(initialHeight);
+                        $('#' + sliderValueId).val(initialValue);
+                    }
+                });
+            });
+
+                    // Add change event listener to the first three text boxes
+            $("#slider-value-0, #slider-value-1, #slider-value-2").on('change', function() {
+                var textboxId = $(this).attr('id');
+                var value = parseInt($(this).val(), 10); // Get the integer value from the text box
+
+                // Validate the value is within the min and max range of 0 to 100
+                if (isNaN(value) || value < 0 || value > 100) {
+                    alert('Please enter a whole number between 0 and 100.');
+                    $(this).val(''); // Clear the invalid value
+                    return;
+                }
+
+                // Update the corresponding slider with the new value
+                var sliderId = textboxId.replace('slider-value', 'slider-vertical');
+                $("#" + sliderId).slider("value", value);
+            });
+        });
+    </script>
+</body>
+</html>
+
