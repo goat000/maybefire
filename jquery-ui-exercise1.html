@@ -138,6 +138,35 @@
             // slider min/max values are not exactly 0 and 100
             var initialSliderValues = [50, 30, 20];
 
+            function updateSliderHandles() {
+                $(".slider-vertical").each(function() {
+                    var value = $(this).slider("value");
+                    $(this).find(".slider-filled").height((value / 100) * $(this).height());
+                });
+            }
+
+            // Don't let the sliders past the total withdrawal amount
+            function restrictSliders(index, proposedValue) {
+                var allowedValue = proposedValue;
+                var total = 0;
+
+                // Calculate the total of the first three sliders
+                $(".slider-vertical").each(function(i) {
+                    if (i !== index) { // Exclude the current slider
+                        total += $(this).slider("value");
+                    }
+                });
+
+                var maxAllowedValue = 100 - total; // Maximum value allowed for the current slider
+
+                // If the proposed value is greater than the max allowed value, adjust it
+                if (proposedValue > maxAllowedValue) {
+                    allowedValue = maxAllowedValue;
+                }
+
+                return allowedValue; // Return the adjusted value for the slider
+            }
+
             $(".slider-vertical").each(function(i) {
                 var sliderId = 'slider-vertical-' + i;
                 var sliderValueId = 'slider-value-' + i;
@@ -151,10 +180,16 @@
                     value: initialSliderValues[i],
                     step: 1,
                     slide: function(event, ui) {
-                        var percentage = ui.value;
-                        var heightFilled = (percentage / 100) * $(this).height();
-                        $(this).children('.slider-filled').height(heightFilled);
-                        $('#' + sliderValueId).val(ui.value);
+                        var adjustedValue = restrictSliders(i, ui.value);
+
+                        // If the adjusted value is different from the proposed value, prevent the slide
+                        if (adjustedValue !== ui.value) {
+                            event.preventDefault();
+                            $(this).slider("value", adjustedValue);
+                        }
+
+                        $('#' + sliderValueId).val(adjustedValue);
+                        updateSliderHandles();
                     },
                     create: function(event, ui) {
                         var initialValue = $(this).slider("value");
@@ -163,35 +198,23 @@
                         $('#' + sliderValueId).val(initialValue);
                     }
                 });
+
+                // Add change event listener to the first three text boxes
+                $('#' + sliderValueId).on('change', function() {
+                    var value = parseInt($(this).val()); // Get the integer value from the text box
+                    if (isNaN(value) || value < 0) {
+                        value = 0
+                        $(this).val(0);
+                    } 
+
+                    var adjustedValue = restrictSliders(i, value);
+
+                    $(this).val(adjustedValue);
+
+                    $('#' + sliderId).slider("value", adjustedValue);
+                    updateSliderHandles();
+                });
             });
-
-            // Add change event listener to the first three text boxes
-            $("#slider-value-0, #slider-value-1, #slider-value-2").on('change', function() {
-                var textboxId = $(this).attr('id');
-                var value = parseInt($(this).val(), 10); // Get the integer value from the text box
-
-                // Validate the value is within the min and max range of 0 to 100
-                if (isNaN(value) || value < 0 || value > 100) {
-                    alert('Please enter a whole number between 0 and 100.');
-                    $(this).val(''); // Clear the invalid value
-                    return;
-                }
-
-                // Update the corresponding slider with the new value
-                var sliderId = textboxId.replace('slider-value', 'slider-vertical');
-                $("#" + sliderId).slider("value", value);
-                
-                var sliderFilledId = textboxId.replace('slider-value', 'slider-filled');
-                // Filthy hack - only works as long as value range is 100
-                $("#" + sliderFilledId).height(value + '%');
-            });
-
-            function setBucketFillLevel(percentage) {
-                const fillElement = document.querySelector('.bucket-fill');
-                fillElement.style.height = `${percentage}%`;
-            }
-
-
         });
     </script>
 </body>
