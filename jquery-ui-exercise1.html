@@ -134,6 +134,8 @@
 
     <script>
         $(function() {
+            // Note to self: There are probably quite a few places that will get messed up if the
+            // slider min/max values are not exactly 0 and 100
             var initialSliderValues = [50, 30, 20];
 
             $(".slider-vertical").each(function(i) {
@@ -178,6 +180,10 @@
                 // Update the corresponding slider with the new value
                 var sliderId = textboxId.replace('slider-value', 'slider-vertical');
                 $("#" + sliderId).slider("value", value);
+                
+                var sliderFilledId = textboxId.replace('slider-value', 'slider-filled');
+                // Filthy hack - only works as long as value range is 100
+                $("#" + sliderFilledId).height(value + '%');
             });
 
             function setBucketFillLevel(percentage) {
