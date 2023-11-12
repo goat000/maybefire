@@ -52,6 +52,7 @@
         input.slider-value-input {
             width: 100%;
             text-align: center;
+            margin-top:20px;
         }
 
         .buckets {
@@ -133,10 +134,11 @@
 
     <script>
         $(function() {
-            [0,1,2].forEach(function(label, index) {
-                alert("hi hi");
-                var sliderId = 'slider-vertical-' + index;
-                var sliderValueId = 'slider-value-' + index;
+            var initialSliderValues = [50, 30, 20];
+
+            $(".slider-vertical").each(function(i) {
+                var sliderId = 'slider-vertical-' + i;
+                var sliderValueId = 'slider-value-' + i;
 
 
                 $('#' + sliderId).slider({
@@ -144,7 +146,7 @@
                     range: "min",
                     min: 0,
                     max: 100,
-                    value: 34,
+                    value: initialSliderValues[i],
                     step: 1,
                     slide: function(event, ui) {
                         var percentage = ui.value;
