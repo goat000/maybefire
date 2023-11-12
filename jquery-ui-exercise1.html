@@ -55,16 +55,21 @@
         }
 
         .buckets {
-            width: 100px;
+            width: 150px;
             float:left;
             margin-left:25px;
+            text-align:center;
         }
 
         .bucket-container {
-            border-top: 80px solid black;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            
+            width: 100px;
+            height: 100px;
+            margin:auto;
+            border-bottom: 2px solid black;
+            border-left: 2px solid black;
+            border-right: 2px solid black;
+            border-top: transparent;
+            position: relative;
         }
 
         .bucket-fill {
@@ -73,6 +78,14 @@
             position: absolute;
             bottom: 0;
         }
+
+        input.bucket-value-input {
+            width: 100%;
+            text-align: center;
+            margin-top:5px;
+            margin-bottom:20px;
+        }
+
     </style>
 </head>
 <body>
@@ -83,14 +96,14 @@
             <div id="slider-vertical-0" class="slider-vertical">
                 <div id="slider-filled-0" class="slider-filled"></div>
             </div>
-            <input type="text" id="slider-value-1" class="slider-value-input"/>
+            <input type="text" id="slider-value-0" class="slider-value-input"/>
         </div>
         <div class="slider-container">
             <div class="slider-label">Year 2 Withdrawal</div>
             <div id="slider-vertical-1" class="slider-vertical">
                 <div id="slider-filled-1" class="slider-filled"></div>
             </div>
-            <input type="text" id="slider-value-2" class="slider-value-input"/>
+            <input type="text" id="slider-value-1" class="slider-value-input"/>
         </div>
         <div class="slider-container">
             <div class="slider-label">Year 3 Withdrawal</div>
@@ -100,44 +113,31 @@
             <input type="text" id="slider-value-2" class="slider-value-input"/>
         </div>
         <div class="buckets">
-            <div style="text-align: center;">Withdrawals taxed at 0%</div>
-            <div id="zero-percent-bucket" class="bucket-container"></div>
-            <div style="text-align: center;">Withdrawals taxed at 10%</div>
-            <div id="ten-percent-bucket" class="bucket-container"></div>
-            <div style="text-align: center;">Withdrawals taxed at 12%</div>
-            <div id="twelve-percent-bucket" class="bucket-container"></div>
+            Withdrawals taxed at 0%
+            <div class="bucket-container">
+                <div class="bucket-fill" id="zero-percent-bucket" style="height: 0%;"></div>
+            </div>
+            <input type="text" id="zero-percent-value" class="bucket-value-input" readonly/>
+            Withdrawals taxed at 10%
+            <div class="bucket-container">
+                <div class="bucket-fill" id="ten-percent-bucket" style="height: 0%;"></div>
+            </div>
+            <input type="text" id="ten-percent-value" class="bucket-value-input" readonly/>
+            Withdrawals taxed at 12%
+            <div class="bucket-container">
+                <div class="bucket-fill"  id="twelve-percent-bucket" style="height: 0%;"></div>
+            </div>
+            <input type="text" id="twelve-percent-value" class="bucket-value-input" readonly/>
         </div>
     </div>
 
     <script>
         $(function() {
-            // var labels = [
-            //     'Year 1 withdrawal', 'Year 2 withdrawal', 'Year 3 withdrawal',
-            //     'Taxed at 0%', 'Taxed at 10%', 'Taxed at 12%', 'Total Tax'
-            // ];
-
-            labels.forEach(function(label, index) {
+            [0,1,2].forEach(function(label, index) {
+                alert("hi hi");
                 var sliderId = 'slider-vertical-' + index;
-                // var sliderFilledId = 'slider-filled-' + index;
-                // var sliderValueId = 'slider-value-' + index;
-        
-                // var textToAppend = '<div class="slider-container">' +
-                //         '<div class="slider-label">' + label + '</div>' +
-                //         '<div id="' + sliderId + '" class="slider-vertical">' +
-                //             '<div id="' + sliderFilledId + '" class="slider-filled"></div>' +
-                //         '</div>' +
-                //         '<input type="text" id="' + sliderValueId + '" class="slider-value-input"'
-                // if (index < 3) {
-                //     textToAppend += '/>'
-                // }
-                // else {
-                //     textToAppend += ' readonly />'
-                // }
-                // textToAppend += '</div>'
+                var sliderValueId = 'slider-value-' + index;
 
-                // if (index > 3) {
-                //     $('#sliders').append(textToAppend);
-                // }
 
                 $('#' + sliderId).slider({
                     orientation: "vertical",
@@ -161,7 +161,7 @@
                 });
             });
 
-                    // Add change event listener to the first three text boxes
+            // Add change event listener to the first three text boxes
             $("#slider-value-0, #slider-value-1, #slider-value-2").on('change', function() {
                 var textboxId = $(this).attr('id');
                 var value = parseInt($(this).val(), 10); // Get the integer value from the text box
@@ -177,6 +177,13 @@
                 var sliderId = textboxId.replace('slider-value', 'slider-vertical');
                 $("#" + sliderId).slider("value", value);
             });
+
+            function setBucketFillLevel(percentage) {
+                const fillElement = document.querySelector('.bucket-fill');
+                fillElement.style.height = `${percentage}%`;
+            }
+
+
         });
     </script>
 </body>
