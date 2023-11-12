@@ -201,8 +201,7 @@
 
             $(".slider-vertical").each(function(i) {
                 var sliderId = 'slider-vertical-' + i;
-                var sliderValueId = 'slider-value-' + i;
-
+                var sliderValueId = 'slider-value-' + i;                
 
                 $('#' + sliderId).slider({
                     orientation: "vertical",
@@ -212,14 +211,19 @@
                     value: initialSliderValues[i],
                     step: 1,
                     slide: function(event, ui) {
-                        var adjustedValue = restrictSliders(i, ui.value);
+                        var requestedValue = ui.value;
+                        var adjustedValue = restrictSliders(i, requestedValue);
 
-                        // If the adjusted value is different from the proposed value, prevent the slide
-                        if (adjustedValue !== ui.value) {
+                        // If the adjusted value is different from the proposed value, prevent the
+                        // slide.
+                        if (adjustedValue !== requestedValue) {
                             event.preventDefault();
-                            $(this).slider("value", adjustedValue);
                         }
 
+                        // I think the standard slider logic will update this value, but I'd like to do it
+                        // before calling the update functions as a simple way to avoid them working on 
+                        // numbers from before this event.  And it doesn't seem to hurt anything.
+                        $(this).slider("value", adjustedValue);
                         $('#' + sliderValueId).val(adjustedValue);
                         updateSliderHandles();
                         updateBuckets();
