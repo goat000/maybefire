@@ -54,20 +54,25 @@
             text-align: center;
         }
 
-        .bucket {
-            border-top: 100px solid black;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            height: 0;
+        .buckets {
             width: 100px;
+            float:left;
+            margin-left:25px;
         }
 
-        /* .bucket-fill {
+        .bucket-container {
+            border-top: 80px solid black;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            
+        }
+
+        .bucket-fill {
             background-color: blue;
             width: 100%;
             position: absolute;
             bottom: 0;
-        } */
+        }
     </style>
 </head>
 <body>
@@ -94,9 +99,14 @@
             </div>
             <input type="text" id="slider-value-2" class="slider-value-input"/>
         </div>
-    </div>
-
-    <div id="zero-percent-bucket" class="bucket">WTF
+        <div class="buckets">
+            <div style="text-align: center;">Withdrawals taxed at 0%</div>
+            <div id="zero-percent-bucket" class="bucket-container"></div>
+            <div style="text-align: center;">Withdrawals taxed at 10%</div>
+            <div id="ten-percent-bucket" class="bucket-container"></div>
+            <div style="text-align: center;">Withdrawals taxed at 12%</div>
+            <div id="twelve-percent-bucket" class="bucket-container"></div>
+        </div>
     </div>
 
     <script>
