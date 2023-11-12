@@ -38,7 +38,7 @@
         }
 
         .slider-label {
-            height: 40px; /* Adjust the height as needed to fit the largest label */
+            height: 50px; /* Adjust the height as needed to fit the largest label */
             text-align: center;
             margin-bottom: 5px; /* Add some space between the label and the slider */
             overflow: hidden; /* Prevents text from overflowing the fixed height */
@@ -93,21 +93,21 @@
 
     <div id="sliders">
         <div class="slider-container">
-            <div class="slider-label">Year 1 Withdrawal</div>
+            <div class="slider-label">Year 1 Withdrawal, in thousands</div>
             <div id="slider-vertical-0" class="slider-vertical">
                 <div id="slider-filled-0" class="slider-filled"></div>
             </div>
             <input type="text" id="slider-value-0" class="slider-value-input"/>
         </div>
         <div class="slider-container">
-            <div class="slider-label">Year 2 Withdrawal</div>
+            <div class="slider-label">Year 2 Withdrawal, in thousands</div>
             <div id="slider-vertical-1" class="slider-vertical">
                 <div id="slider-filled-1" class="slider-filled"></div>
             </div>
             <input type="text" id="slider-value-1" class="slider-value-input"/>
         </div>
         <div class="slider-container">
-            <div class="slider-label">Year 3 Withdrawal</div>
+            <div class="slider-label">Year 3 Withdrawal, in thousands</div>
             <div id="slider-vertical-2" class="slider-vertical">
                 <div id="slider-filled-2" class="slider-filled"></div>
             </div>
@@ -143,6 +143,34 @@
                     var value = $(this).slider("value");
                     $(this).find(".slider-filled").height((value / 100) * $(this).height());
                 });
+            }
+
+            function updateBuckets() {
+                const sizeOf0Bucket = 29200 * 3.0;
+                const sizeOf10Bucket = 23200 * 3.0;
+                const sizeOf12Bucket = 71100 * 3.0;
+                var amountIn0Bucket = 0;
+                var amountIn10Bucket = 0;
+                var amountIn12Bucket = 0;
+                var taxFrom0Bucket = 0;
+                var taxFrom10Bucket = 0;
+                var taxFrom12Bucket = 0;
+                var overallTax = 0;
+
+                $(".slider-vertical").each(function() {
+                    var value = $(this).slider("value") * 1000;
+                    amountIn0Bucket += Math.min(value, 29200);
+                    amountIn10Bucket += Math.max(0, Math.min(value - 29200, 23200));
+                    amountIn12Bucket += Math.max(0, Math.min(value - 52400, 71100));
+                });
+
+                taxFrom10Bucket = 0.10 * amountIn10Bucket;
+                taxFrom12Bucket = 0.12 * amountIn12Bucket;
+                overallTax = taxFrom0Bucket + taxFrom10Bucket + taxFrom12Bucket;
+                
+                $('#zero-percent-bucket').height(100 * amountIn0Bucket / sizeOf0Bucket + '%');
+                $('#ten-percent-bucket').height(100 * amountIn10Bucket / sizeOf10Bucket + '%');
+                $('#twelve-percent-bucket').height(100 * amountIn12Bucket / sizeOf12Bucket + '%');
             }
 
             // Don't let the sliders past the total withdrawal amount
@@ -190,12 +218,13 @@
 
                         $('#' + sliderValueId).val(adjustedValue);
                         updateSliderHandles();
+                        updateBuckets();
                     },
                     create: function(event, ui) {
                         var initialValue = $(this).slider("value");
                         var initialHeight = (initialValue / 100) * $(this).height();
                         $(this).children('.slider-filled').height(initialHeight);
-                        $('#' + sliderValueId).val(initialValue);
+                        $('#' + sliderValueId).val(initialValue);                        
                     }
                 });
 
@@ -213,6 +242,7 @@
 
                     $('#' + sliderId).slider("value", adjustedValue);
                     updateSliderHandles();
+                    updateBuckets();
                 });
             });
         });
