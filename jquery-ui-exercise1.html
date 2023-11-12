@@ -134,9 +134,16 @@
 
     <script>
         $(function() {
+            const sizeOf0Bucket = 29200 * 3.0;
+            const sizeOf10Bucket = 23200 * 3.0;
+            const sizeOf12Bucket = 71100 * 3.0;
+
             // Note to self: There are probably quite a few places that will get messed up if the
             // slider min/max values are not exactly 0 and 100
-            var initialSliderValues = [50, 30, 20];
+            const initialSliderValues = [50, 30, 20];
+            const initialBucketValues = [29200 + 29200 + 20000, 21600, 0];
+            const initialTaxAmounts = [0, 21600 * 0.1, 0];
+
 
             function updateSliderHandles() {
                 $(".slider-vertical").each(function() {
@@ -146,9 +153,6 @@
             }
 
             function updateBuckets() {
-                const sizeOf0Bucket = 29200 * 3.0;
-                const sizeOf10Bucket = 23200 * 3.0;
-                const sizeOf12Bucket = 71100 * 3.0;
                 var amountIn0Bucket = 0;
                 var amountIn10Bucket = 0;
                 var amountIn12Bucket = 0;
@@ -224,7 +228,7 @@
                         var initialValue = $(this).slider("value");
                         var initialHeight = (initialValue / 100) * $(this).height();
                         $(this).children('.slider-filled').height(initialHeight);
-                        $('#' + sliderValueId).val(initialValue);                        
+                        $('#' + sliderValueId).val(initialValue);
                     }
                 });
 
@@ -244,6 +248,10 @@
                     updateSliderHandles();
                     updateBuckets();
                 });
+
+                $('#zero-percent-bucket').height(100 * initialBucketValues[0] / sizeOf0Bucket + '%');
+                $('#ten-percent-bucket').height(100 * initialBucketValues[1] / sizeOf10Bucket + '%');
+                $('#twelve-percent-bucket').height(100 * initialBucketValues[2] / sizeOf12Bucket + '%');
             });
         });
     </script>
