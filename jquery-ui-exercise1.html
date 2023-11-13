@@ -91,7 +91,7 @@
             border:none;
         }
 
-        div.total-tax {
+        div.results {
             float:left;
             width:250px;
         }
@@ -100,6 +100,7 @@
             box-sizing:border-box;
             width: 100%;
             text-align: center;
+            margin-bottom: 20px;
         }
 
     </style>
@@ -144,22 +145,31 @@
             </div>
             <input type="text" id="twelve-percent-value" class="bucket-value-numeric" readonly/>
         </div>
-        <div class="total-tax">
+        <div class="results">
             Total tax paid on all withdrawals
             <input type="text" id="total-tax" class="total-tax" readonly/>
+            <div style="margin-bottom: 20px;" id="full-withdrawal-or-not"></div>
+            <div style="margin-bottom: 20px;" id="min-tax-or-not"></div>
         </div>
     </div>
 
     <script>
         $(function() {
+            const fullWithdrawalAmount = 100000;
+            const minTax = 1240;
+            
             const sizeOf0Bucket = 29200 * 3.0;
             const sizeOf10Bucket = 23200 * 3.0;
             const sizeOf12Bucket = 71100 * 3.0;
 
             const initialSliderValues = [50000, 30000, 20000];
             const initialBucketValues = [29200 + 29200 + 20000, 21600, 0];
-            const initialTax = 2160;            
-
+            const initialTax = 2160;    
+            
+            const fullWithdrawalText = "You are withdrawing the entire intended amount. ✔️";
+            const partialWithdrawalText = "You are not withdrawing the entire intended amount.  Move the sliders up until the add up to 100,000.";
+            const optimalTax = "<strong>You are paying the lowest possible amount of income tax. ✔️</strong>";
+            const suboptimalTax = "You are paying <em>more</em> income tax than you have to. Keep playing with the sliders!";
 
             function updateSliderHandles() {
                 $(".slider-vertical").each(function() {
@@ -197,6 +207,32 @@
                 $('#twelve-percent-value').val(amountIn12Bucket);
 
                 $('#total-tax').val(overallTax);
+            }
+
+            function updateTextMessages() {
+                var totalWithdrawal = $('#slider-vertical-0').slider("value") + $('#slider-vertical-1').slider("value") + $('#slider-vertical-2').slider("value");
+                if (totalWithdrawal == fullWithdrawalAmount) {
+                    $('#full-withdrawal-or-not').html(fullWithdrawalText);
+
+                    var totalTax = $('#total-tax').val();
+                    if (totalTax == minTax) {
+                        $('#min-tax-or-not').html(optimalTax);
+                    } else if (totalTax > minTax) {
+                        $('#min-tax-or-not').html(suboptimalTax);
+                    } else {
+                        $('#min-tax-or-not').html("Error, sorry.");
+                    }
+                } else if (totalWithdrawal < fullWithdrawalAmount) {
+                    $('#full-withdrawal-or-not').html(partialWithdrawalText);
+                    $('#min-tax-or-not').html("");
+                } else {
+                    $('#full-withdrawal-or-not').text("Error, sorry.");
+                    $('#min-tax-or-not').html("");
+                }
+
+                
+
+                
             }
 
             // Don't let the sliders past the total withdrawal amount
@@ -249,6 +285,7 @@
                         $('#' + sliderValueId).val(adjustedValue);
                         updateSliderHandles();
                         updateBuckets();
+                        updateTextMessages();
                     },
                     create: function(event, ui) {
                         var initialValue = $(this).slider("value");
@@ -273,6 +310,7 @@
                     $('#' + sliderId).slider("value", adjustedValue);
                     updateSliderHandles();
                     updateBuckets();
+                    updateTextMessages();
                 });
 
                 // updateBuckets doesn't like to be called while initializing the slider,
@@ -284,6 +322,8 @@
                 $('#ten-percent-value').val(initialBucketValues[1]);
                 $('#twelve-percent-value').val(initialBucketValues[2]);
                 $('#total-tax').val(initialTax);
+                $('#full-withdrawal-or-not').html(fullWithdrawalText);
+                $('#min-tax-or-not').html(suboptimalTax);
             });
         });
     </script>
