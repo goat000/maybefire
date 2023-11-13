@@ -50,13 +50,14 @@
         }
 
         input.slider-value-input {
+            box-sizing:border-box;
             width: 100%;
             text-align: center;
             margin-top:20px;
         }
 
         .buckets {
-            width: 150px;
+            width: 175px;
             float:left;
             margin-left:25px;
             text-align:center;
@@ -80,17 +81,30 @@
             bottom: 0;
         }
 
-        input.bucket-value-input {
+        input.bucket-value-numeric {
+            box-sizing:border-box;
             width: 100%;
             text-align: center;
             margin-top:5px;
             margin-bottom:20px;
+            border-width:0px;
+            border:none;
+        }
+
+        div.total-tax {
+            float:left;
+            width:250px;
+        }
+
+        input.total-tax {
+            box-sizing:border-box;
+            width: 100%;
+            text-align: center;
         }
 
     </style>
 </head>
 <body>
-
     <div id="sliders">
         <div class="slider-container">
             <div class="slider-label">Year 1 Withdrawal</div>
@@ -118,17 +132,21 @@
             <div class="bucket-container">
                 <div class="bucket-fill" id="zero-percent-bucket" style="height: 0%;"></div>
             </div>
-            <input type="text" id="zero-percent-value" class="bucket-value-input" readonly/>
+            <input type="text" id="zero-percent-value" class="bucket-value-numeric" readonly/>
             Withdrawals taxed at 10%
             <div class="bucket-container">
                 <div class="bucket-fill" id="ten-percent-bucket" style="height: 0%;"></div>
             </div>
-            <input type="text" id="ten-percent-value" class="bucket-value-input" readonly/>
+            <input type="text" id="ten-percent-value" class="bucket-value-numeric" readonly/>
             Withdrawals taxed at 12%
             <div class="bucket-container">
                 <div class="bucket-fill"  id="twelve-percent-bucket" style="height: 0%;"></div>
             </div>
-            <input type="text" id="twelve-percent-value" class="bucket-value-input" readonly/>
+            <input type="text" id="twelve-percent-value" class="bucket-value-numeric" readonly/>
+        </div>
+        <div class="total-tax">
+            Total tax paid on all withdrawals
+            <input type="text" id="total-tax" class="total-tax" readonly/>
         </div>
     </div>
 
@@ -140,7 +158,7 @@
 
             const initialSliderValues = [50000, 30000, 20000];
             const initialBucketValues = [29200 + 29200 + 20000, 21600, 0];
-            const initialTaxAmounts = [0, 21600 * 0.1, 0];
+            const initialTax = 2160;            
 
 
             function updateSliderHandles() {
@@ -173,6 +191,12 @@
                 $('#zero-percent-bucket').height(100 * amountIn0Bucket / sizeOf0Bucket + '%');
                 $('#ten-percent-bucket').height(100 * amountIn10Bucket / sizeOf10Bucket + '%');
                 $('#twelve-percent-bucket').height(100 * amountIn12Bucket / sizeOf12Bucket + '%');
+
+                $('#zero-percent-value').val(amountIn0Bucket);
+                $('#ten-percent-value').val(amountIn10Bucket);
+                $('#twelve-percent-value').val(amountIn12Bucket);
+
+                $('#total-tax').val(overallTax);
             }
 
             // Don't let the sliders past the total withdrawal amount
@@ -251,9 +275,15 @@
                     updateBuckets();
                 });
 
+                // updateBuckets doesn't like to be called while initializing the slider,
+                // so set hardcoded values initially.
                 $('#zero-percent-bucket').height(100 * initialBucketValues[0] / sizeOf0Bucket + '%');
                 $('#ten-percent-bucket').height(100 * initialBucketValues[1] / sizeOf10Bucket + '%');
                 $('#twelve-percent-bucket').height(100 * initialBucketValues[2] / sizeOf12Bucket + '%');
+                $('#zero-percent-value').val(initialBucketValues[0]);
+                $('#ten-percent-value').val(initialBucketValues[1]);
+                $('#twelve-percent-value').val(initialBucketValues[2]);
+                $('#total-tax').val(initialTax);
             });
         });
     </script>
