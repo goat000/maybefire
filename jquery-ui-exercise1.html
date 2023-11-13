@@ -93,21 +93,21 @@
 
     <div id="sliders">
         <div class="slider-container">
-            <div class="slider-label">Year 1 Withdrawal, in thousands</div>
+            <div class="slider-label">Year 1 Withdrawal</div>
             <div id="slider-vertical-0" class="slider-vertical">
                 <div id="slider-filled-0" class="slider-filled"></div>
             </div>
             <input type="text" id="slider-value-0" class="slider-value-input"/>
         </div>
         <div class="slider-container">
-            <div class="slider-label">Year 2 Withdrawal, in thousands</div>
+            <div class="slider-label">Year 2 Withdrawal</div>
             <div id="slider-vertical-1" class="slider-vertical">
                 <div id="slider-filled-1" class="slider-filled"></div>
             </div>
             <input type="text" id="slider-value-1" class="slider-value-input"/>
         </div>
         <div class="slider-container">
-            <div class="slider-label">Year 3 Withdrawal, in thousands</div>
+            <div class="slider-label">Year 3 Withdrawal</div>
             <div id="slider-vertical-2" class="slider-vertical">
                 <div id="slider-filled-2" class="slider-filled"></div>
             </div>
@@ -138,9 +138,7 @@
             const sizeOf10Bucket = 23200 * 3.0;
             const sizeOf12Bucket = 71100 * 3.0;
 
-            // Note to self: There are probably quite a few places that will get messed up if the
-            // slider min/max values are not exactly 0 and 100
-            const initialSliderValues = [50, 30, 20];
+            const initialSliderValues = [50000, 30000, 20000];
             const initialBucketValues = [29200 + 29200 + 20000, 21600, 0];
             const initialTaxAmounts = [0, 21600 * 0.1, 0];
 
@@ -148,7 +146,7 @@
             function updateSliderHandles() {
                 $(".slider-vertical").each(function() {
                     var value = $(this).slider("value");
-                    $(this).find(".slider-filled").height((value / 100) * $(this).height());
+                    $(this).find(".slider-filled").height((value / 100000) * $(this).height());
                 });
             }
 
@@ -162,7 +160,7 @@
                 var overallTax = 0;
 
                 $(".slider-vertical").each(function() {
-                    var value = $(this).slider("value") * 1000;
+                    var value = $(this).slider("value");
                     amountIn0Bucket += Math.min(value, 29200);
                     amountIn10Bucket += Math.max(0, Math.min(value - 29200, 23200));
                     amountIn12Bucket += Math.max(0, Math.min(value - 52400, 71100));
@@ -189,7 +187,7 @@
                     }
                 });
 
-                var maxAllowedValue = 100 - total; // Maximum value allowed for the current slider
+                var maxAllowedValue = 100000 - total; // Maximum value allowed for the current slider
 
                 // If the proposed value is greater than the max allowed value, adjust it
                 if (proposedValue > maxAllowedValue) {
@@ -207,9 +205,9 @@
                     orientation: "vertical",
                     range: "min",
                     min: 0,
-                    max: 100,
+                    max: 100000,
                     value: initialSliderValues[i],
-                    step: 1,
+                    step: 1000,
                     slide: function(event, ui) {
                         var requestedValue = ui.value;
                         var adjustedValue = restrictSliders(i, requestedValue);
@@ -230,7 +228,7 @@
                     },
                     create: function(event, ui) {
                         var initialValue = $(this).slider("value");
-                        var initialHeight = (initialValue / 100) * $(this).height();
+                        var initialHeight = (initialValue / 100000) * $(this).height();
                         $(this).children('.slider-filled').height(initialHeight);
                         $('#' + sliderValueId).val(initialValue);
                     }
