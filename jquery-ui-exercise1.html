@@ -20,8 +20,23 @@
         #sliders {
             display: grid;
             grid-template-rows: auto 1fr auto auto;
-            grid-template-columns: 3;
+            grid-template-columns: 4;
             width: min-content;
+        }
+
+        #tax-bracket-indicator-container {
+            display:grid;
+            grid-template-rows: 47.5% 23.2% 29.2%;
+            text-align: center;
+            padding-left: 2px;
+            padding-right: 2px;
+            margin-right:5px;
+        }
+
+        .tax-bracket-indicator {
+            /* Simplest way I can find to vertically center text in a div */
+            display: grid;
+            align-items: center;
         }
 
         .slider-container {
@@ -76,7 +91,7 @@
         }
 
         .buckets {
-            width: 175px;
+            width: 120px;
             float:left;
             text-align:center;
         }
@@ -138,30 +153,36 @@
 <body>
     <div id="flexbox-container">
         <div id="sliders">
-            <div class="slider-label" style="grid-row: 1; grid-column: 1;">Year 1 Withdrawal</div>
-            <div class="slider-container" style="grid-row: 2; grid-column: 1;">
+            <div id="tax-bracket-indicator-container" style="grid-row: 2; grid-column: 1;">
+                <div class="tax-bracket-indicator" style="grid-row: 1; grid-column: 1; background-color:#B66">12%</div>
+                <div class="tax-bracket-indicator" style="grid-row: 2; grid-column: 1; background-color:#FF6">10%</div>
+                <div class="tax-bracket-indicator" style="grid-row: 3; grid-column: 1; background-color:#6B6">0%</div>
+            </div>
+
+            <div class="slider-label" style="grid-row: 1; grid-column: 2;">Year 1 Withdrawal</div>
+            <div class="slider-container" style="grid-row: 2; grid-column: 2;">
                 <div id="slider-vertical-0" class="slider-vertical">
                     <div id="slider-filled-0" class="slider-filled"></div>
                 </div>
             </div>
-            <input type="text" id="slider-value-0" class="slider-value-input" style="grid-row: 3; grid-column: 1;"/>
+            <input type="text" id="slider-value-0" class="slider-value-input" style="grid-row: 3; grid-column: 2;"/>
 
-            <div class="slider-label" style="grid-row: 1; grid-column: 2">Year 2 Withdrawal</div>
-            <div class="slider-container" style="grid-row: 2; grid-column: 2;">                
+            <div class="slider-label" style="grid-row: 1; grid-column: 3">Year 2 Withdrawal</div>
+            <div class="slider-container" style="grid-row: 2; grid-column: 3;">                
                 <div id="slider-vertical-1" class="slider-vertical">
                     <div id="slider-filled-1" class="slider-filled"></div>
                 </div>
             </div>
+            <input type="text" id="slider-value-1" class="slider-value-input" style="grid-row: 3; grid-column: 3;"/>
 
-            <div class="slider-label" style="grid-row: 1; grid-column: 3">Year 3 Withdrawal</div>
-            <input type="text" id="slider-value-1" class="slider-value-input" style="grid-row: 3; grid-column: 2;"/>
-            <div class="slider-container" style="grid-row: 2; grid-column: 3;">
+            <div class="slider-label" style="grid-row: 1; grid-column: 4">Year 3 Withdrawal</div>
+            <div class="slider-container" style="grid-row: 2; grid-column: 4;">
                 <div id="slider-vertical-2" class="slider-vertical">
                     <div id="slider-filled-2" class="slider-filled"></div>
                 </div>                
             </div>
-            <input type="text" id="slider-value-2" class="slider-value-input" style="grid-row: 3; grid-column: 3;"/>
-            <div id="full-withdrawal-or-not" style="grid-row: 4; grid-column-start: 1; grid-column-end: 4; height: 45px; margin-top: 20px; font-weight:bold;"></div>
+            <input type="text" id="slider-value-2" class="slider-value-input" style="grid-row: 3; grid-column: 4;"/>
+            <div id="full-withdrawal-or-not" style="grid-row: 4; grid-column-start: 1; grid-column-end: 5; height: 45px; margin-top: 20px; font-weight:bold;"></div>
         </div>
 
         <div class="arrow"><p style="grid-row:2">➡️</p></div>
@@ -191,7 +212,7 @@
 
         <div class="results">
             <div style="grid-row: 2; font-weight:bold">Total tax paid on all withdrawals</div>
-            <input type="text" id="total-tax" class="total-tax" style="grid-row: 3;" readonly/>
+            <input type="text" id="total-tax" class="total-tax" style="grid-row: 3; font-weight:bold; font-size: 20px;" readonly/>
             <div style="grid-row: 4; margin-bottom: 20px;  font-weight:bold;" id="min-tax-or-not"></div>
         </div>
         </div>
@@ -214,7 +235,7 @@
             const fullWithdrawalText = "You are withdrawing the full amount. ✔️";
             const partialWithdrawalText = "You are not withdrawing the full amount.<br>  Move the sliders until they add up to 100,000.";
             const optimalTax = "You are paying the lowest possible amount of income tax. ✔️";
-            const suboptimalTax = "You are paying <em>more</em> income tax than you have to. Keep playing with the sliders!";
+            const suboptimalTax = "You are paying <em>more</em> income tax than you have to.  Play with the sliders!";
 
             function updateSliderHandles() {
                 $(".slider-vertical").each(function() {
@@ -316,7 +337,7 @@
                     min: 0,
                     max: 100000,
                     value: initialSliderValues[i],
-                    step: 1000,
+                    step: 100,
                     slide: function(event, ui) {
                         var requestedValue = ui.value;
                         var adjustedValue = restrictSliders(i, requestedValue);
