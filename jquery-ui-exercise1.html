@@ -222,6 +222,8 @@
         $(function() {
             const fullWithdrawalAmount = 100000;
             const minTax = 1240;
+
+            const withdrawalStep = 100;
             
             const sizeOf0Bucket = 29200 * 3.0;
             const sizeOf10Bucket = 23200 * 3.0;
@@ -335,9 +337,9 @@
                     orientation: "vertical",
                     range: "min",
                     min: 0,
-                    max: 100000,
+                    max: fullWithdrawalAmount,
                     value: initialSliderValues[i],
-                    step: 100,
+                    step: withdrawalStep,
                     slide: function(event, ui) {
                         var requestedValue = ui.value;
                         var adjustedValue = restrictSliders(i, requestedValue);
@@ -365,15 +367,17 @@
                     }
                 });
 
-                // Add change event listener to the first three text boxes
+                // Also allow changing the withdrawal values via text box
                 $('#' + sliderValueId).on('change', function() {
-                    var value = parseInt($(this).val()); // Get the integer value from the text box
+                    var value = parseInt($(this).val());
                     if (isNaN(value) || value < 0) {
                         value = 0
                         $(this).val(0);
                     } 
 
                     var adjustedValue = restrictSliders(i, value);
+
+                    adjustedValue = Math.round(adjustedValue / withdrawalStep) * withdrawalStep;
 
                     $(this).val(adjustedValue);
 
