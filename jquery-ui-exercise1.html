@@ -11,14 +11,15 @@
         #flexbox-container {
             display: flex;
             flex-wrap: wrap;
+            font-family: Arial, Helvetica, sans-serif;
         }
         #flexbox-container > div {
-            /* padding-right: 10px; */
+            margin-right: 10px;
         }
 
         #sliders {
             display: grid;
-            grid-template-rows: auto 1fr auto;
+            grid-template-rows: auto 1fr auto auto;
             grid-template-columns: 3;
             width: min-content;
         }
@@ -77,8 +78,11 @@
         .buckets {
             width: 175px;
             float:left;
-            margin-left:25px;
             text-align:center;
+        }
+
+        .bucket-label {
+            margin-bottom:5px;
         }
 
         .bucket-container {
@@ -105,14 +109,14 @@
             height: 25 px;
             text-align: center;
             margin-top:5px;
-            margin-bottom:20px;
             border-width:0px;
             border:none;
         }
 
         div.results {
-            float:left;
             width:250px;
+            display: grid;
+            grid-template-rows: 1fr auto auto auto 1fr;
         }
 
         input.total-tax {
@@ -120,6 +124,13 @@
             width: 100%;
             text-align: center;
             margin-bottom: 20px;
+        }
+
+        div.arrow {
+            display: grid;
+            grid-template-rows: 1fr auto 1fr;
+            width: min-content;
+            font-size: 50px;
         }
 
     </style>
@@ -150,30 +161,38 @@
                 </div>                
             </div>
             <input type="text" id="slider-value-2" class="slider-value-input" style="grid-row: 3; grid-column: 3;"/>
+            <div id="full-withdrawal-or-not" style="grid-row: 4; grid-column-start: 1; grid-column-end: 4; height: 45px; margin-top: 20px; font-weight:bold;"></div>
         </div>
 
+        <div class="arrow"><p style="grid-row:2">➡️</p></div>
+
         <div class="buckets">
-            Withdrawals taxed at 0%
+            <div class="bucket-label" style="margin-top:20px">Withdrawals taxed at 0%</div>
             <div class="bucket-container">
                 <div class="bucket-fill" id="zero-percent-bucket" style="height: 0%;"></div>
             </div>
             <input type="text" id="zero-percent-value" class="bucket-value-numeric" readonly/>
-            Withdrawals taxed at 10%
+            <input type="text" id="zero-percent-tax" class="bucket-value-numeric" style="margin-bottom:20px;" readonly/>
+            <div class="bucket-label">Withdrawals taxed at 10%</div>
             <div class="bucket-container">
                 <div class="bucket-fill" id="ten-percent-bucket" style="height: 0%;"></div>
             </div>
             <input type="text" id="ten-percent-value" class="bucket-value-numeric" readonly/>
-            Withdrawals taxed at 12%
+            <input type="text" id="ten-percent-tax" class="bucket-value-numeric" style="margin-bottom:20px;" readonly/>
+            <div class="bucket-label">Withdrawals taxed at 12%</div>
             <div class="bucket-container">
                 <div class="bucket-fill"  id="twelve-percent-bucket" style="height: 0%;"></div>
             </div>
             <input type="text" id="twelve-percent-value" class="bucket-value-numeric" readonly/>
+            <input type="text" id="twelve-percent-tax" class="bucket-value-numeric" style="margin-bottom:20px;" readonly/>
         </div>
+
+        <div class="arrow"><p style="grid-row:2">➡️</p></div>
+
         <div class="results">
-            Total tax paid on all withdrawals
-            <input type="text" id="total-tax" class="total-tax" readonly/>
-            <div style="margin-bottom: 20px;" id="full-withdrawal-or-not"></div>
-            <div style="margin-bottom: 20px;" id="min-tax-or-not"></div>
+            <div style="grid-row: 2; font-weight:bold">Total tax paid on all withdrawals</div>
+            <input type="text" id="total-tax" class="total-tax" style="grid-row: 3;" readonly/>
+            <div style="grid-row: 4; margin-bottom: 20px;  font-weight:bold;" id="min-tax-or-not"></div>
         </div>
         </div>
     </div>
@@ -189,11 +208,12 @@
 
             const initialSliderValues = [50000, 30000, 20000];
             const initialBucketValues = [29200 + 29200 + 20000, 21600, 0];
+            const initialTaxPerBucket = [0, 2160, 0];
             const initialTax = 2160;    
             
-            const fullWithdrawalText = "You are withdrawing the entire intended amount. ✔️";
-            const partialWithdrawalText = "You are not withdrawing the entire intended amount.  Move the sliders up until the add up to 100,000.";
-            const optimalTax = "<strong>You are paying the lowest possible amount of income tax. ✔️</strong>";
+            const fullWithdrawalText = "You are withdrawing the full amount. ✔️";
+            const partialWithdrawalText = "You are not withdrawing the full amount.<br>  Move the sliders until they add up to 100,000.";
+            const optimalTax = "You are paying the lowest possible amount of income tax. ✔️";
             const suboptimalTax = "You are paying <em>more</em> income tax than you have to. Keep playing with the sliders!";
 
             function updateSliderHandles() {
@@ -227,9 +247,13 @@
                 $('#ten-percent-bucket').height(100 * amountIn10Bucket / sizeOf10Bucket + '%');
                 $('#twelve-percent-bucket').height(100 * amountIn12Bucket / sizeOf12Bucket + '%');
 
-                $('#zero-percent-value').val(amountIn0Bucket);
-                $('#ten-percent-value').val(amountIn10Bucket);
-                $('#twelve-percent-value').val(amountIn12Bucket);
+                $('#zero-percent-value').val("Withdrawal: " + amountIn0Bucket);
+                $('#ten-percent-value').val("Withdrawal: " + amountIn10Bucket);
+                $('#twelve-percent-value').val("Withdrawal: " + amountIn12Bucket);
+
+                $('#zero-percent-tax').val("Tax: " + taxFrom0Bucket);
+                $('#ten-percent-tax').val("Tax: " + taxFrom10Bucket);
+                $('#twelve-percent-tax').val("Tax: " + taxFrom12Bucket);
 
                 $('#total-tax').val(overallTax);
             }
@@ -343,12 +367,15 @@
                 $('#zero-percent-bucket').height(100 * initialBucketValues[0] / sizeOf0Bucket + '%');
                 $('#ten-percent-bucket').height(100 * initialBucketValues[1] / sizeOf10Bucket + '%');
                 $('#twelve-percent-bucket').height(100 * initialBucketValues[2] / sizeOf12Bucket + '%');
-                $('#zero-percent-value').val(initialBucketValues[0]);
-                $('#ten-percent-value').val(initialBucketValues[1]);
-                $('#twelve-percent-value').val(initialBucketValues[2]);
+                $('#zero-percent-value').val("Withdrawal: " + initialBucketValues[0]);
+                $('#ten-percent-value').val("Withdrawal: " + initialBucketValues[1]);
+                $('#twelve-percent-value').val("Withdrawal: " + initialBucketValues[2]);
                 $('#total-tax').val(initialTax);
                 $('#full-withdrawal-or-not').html(fullWithdrawalText);
                 $('#min-tax-or-not').html(suboptimalTax);
+                $('#zero-percent-tax').val("Tax: " + initialTaxPerBucket[0]);
+                $('#ten-percent-tax').val("Tax: " + initialTaxPerBucket[1]);
+                $('#twelve-percent-tax').val("Tax: " + initialTaxPerBucket[2]);
             });
         });
     </script>
