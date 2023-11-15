@@ -131,14 +131,13 @@
         div.results {
             width:250px;
             display: grid;
-            grid-template-rows: 1fr auto auto auto 1fr;
+            grid-template-rows: 1fr auto auto 1fr;
         }
 
         input.total-tax {
             box-sizing:border-box;
             width: 100%;
             text-align: center;
-            margin-bottom: 20px;
         }
 
         div.arrow {
@@ -213,8 +212,7 @@
         <div class="results">
             <div style="grid-row: 2; font-weight:bold">Total tax paid on all withdrawals</div>
             <input type="text" id="total-tax" class="total-tax" style="grid-row: 3; font-weight:bold; font-size: 20px;" readonly/>
-            <div style="grid-row: 4; margin-bottom: 20px;  font-weight:bold;" id="min-tax-or-not"></div>
-        </div>
+            <div style="grid-row: 4; margin-top: 30px; font-weight:bold; text-align:center" id="min-tax-or-not"></div>
         </div>
     </div>
 
@@ -236,7 +234,7 @@
             
             const fullWithdrawalText = "You are withdrawing the full amount. ✔️";
             const partialWithdrawalText = "You are not withdrawing the full amount.<br>  Move the sliders until they add up to 100,000.";
-            const optimalTax = "You are paying the lowest possible amount of income tax. ✔️";
+            const optimalTax = "You are paying the lowest possible amount of income tax.  <div style='font-size: 25px'>You Win!✔️</div>";
             const suboptimalTax = "You are paying <em>more</em> income tax than you have to.  Play with the sliders!";
 
             function updateSliderHandles() {
