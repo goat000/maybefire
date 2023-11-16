@@ -1,0 +1,197 @@
+/* I used px instead of vw/wh, because I'm not sure it makes sense to fit all of this onto
+   one screen, no matter how small.  I'm living with scrollbars for now, instead.
+   And in all honesty, this all may have bigger problems on small screens - I haven't
+   tested it.*/
+
+/* Consistency across browsers.
+   In Chrome, cleans up several little border offset issues nicely,
+   and prevents slider handles from being shifted to the right a couple px. */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;            
+}
+
+body {
+    /* Background color that ChatGPT suggested.  Works for me. */
+    background-color: #f4f7f6;
+}
+
+/* I initially wanted a flexbox rather than grid at this highest level, because I didn't
+   actually want the three major sections (i.e. the chunks separated by arrows) to be fully
+   aligned. I'm not so sure it was the right call now, but I don't know that I'll go
+   through the trouble of unifying this flexbox and its inner grids.
+   
+   I had been using flex-wrap:wrap, but as the layout evolved, it came to look pretty
+   terribly muddled when wrapping. */
+#flexbox-container {
+    display: flex;
+    flex-wrap: nowrap;
+}
+#flexbox-container > div {
+    margin-right: 10px;
+}
+
+/*         
+    ****** Styles related to the slider section ******
+    (which includes the tax bracket display to their left.)           
+*/ 
+
+#sliders {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    grid-template-columns: 4;
+    width: min-content;
+}
+
+#tax-bracket-indicator-container {
+    display:grid;
+    /*
+        Bottom 29.2%: $29200 standard deduction (0% tax) for married filing jointly
+        Middle 23.2%: Next $23200, 10% tax bracket
+        Top 47.5%: Next $47500, 12% tax bracket.  The bracket goes further than that, but
+            max withdrawal in one year is 100k, in this exercise.
+
+        All numbers are for 2024.
+    */
+    grid-template-rows: 47.6% 23.2% 29.2%;
+    text-align: center;
+    margin-right:5px;
+}
+
+.tax-bracket-indicator {
+    /* vertically center text in dev */
+    display: grid;
+    align-items: center;
+}
+
+.slider-container {            
+    margin-right: 10px;
+    width: 100px;
+}
+
+.slider-label {
+    height: 40px;
+    width: 100px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.slider-vertical {
+    width: 100px;
+    height: 100%;
+}
+
+/* Image that is displayed on repeat on the filled portion of the sliders. */
+.slider-filled {
+        /* Position and bottom attributes make it so that the background image is correctly
+        anchored to the bottom of the slider, not the top. */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: url('stack_of_money_recurring.png') repeat-y;
+    background-position: bottom; /* So that the background image looks like it is being
+                                    revealed, rather than like it is a curtain being pulled
+                                    up. */
+    z-index: 2;
+}
+
+.slider-vertical .ui-slider-handle {
+    width: 100%;
+    left: 0; /* Without this, the handles end up a bit to the left of the slider body. */
+}
+
+input.slider-value-input {
+    color: #777; /* Not necessary, but kind of nice if the image were missing. */
+    width: 67%;
+    text-align: center;
+    margin:auto;
+    margin-top:20px;
+}
+
+/*         
+    ****** Styles related to the tax buckets section ******
+*/ 
+
+.buckets {
+    width: 125px;
+    text-align:center;
+}
+
+.bucket-label {
+    margin-bottom:5px;
+}
+
+/* Three-sided "bucket" to be filled by withdrawal dollars in a given tax bracket. */
+/* The sides are borders.*/
+.bucket-container {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-top: transparent;
+    position: relative;
+}
+
+/* Might be more intuitive to reuse the image from the sliders, but I'm not sure, it seemed
+   busy. */
+.bucket-fill {
+    background-color: blue;
+    width: 100%;
+    height: 0%;
+    position: absolute;
+    bottom: 0;
+}
+
+input.bucket-value-numeric {
+    /* Explicit width rather than 100%, because I don't want to shrink when
+       the viewport is small. */
+    width: 125px;
+    height: 25 px;
+    text-align: center;
+    margin-top: 5px;
+    border: none;
+    background-color: transparent;
+}
+
+/*         
+    ****** Styles related to the final results section ******
+*/ 
+
+div.results {
+    width: 250px;
+    display: grid;
+    grid-template-rows: 1fr auto auto 1fr;
+}
+
+input.total-tax {
+    /* Explicit width rather than 100%, because I don't want to shrink when
+        the viewport is small. */
+    width: 250px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+}
+
+#full-withdrawal-or-not {
+    height: 45px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#min-tax-or-not {
+    margin-top: 30px; font-weight:bold; text-align:center;
+}
+
+/*         
+    ****** Styles in between the sections called out above ******
+    (Really just the arrow emojis.)
+*/ 
+
+div.arrow {
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    width: min-content;
+    font-size: 50px;
+}
