@@ -149,6 +149,7 @@
         .bucket-fill {
             background-color: blue;
             width: 100%;
+            height: 0%;
             position: absolute;
             bottom: 0;
         }
@@ -181,6 +182,16 @@
             text-align: center;
             border: none;
             background-color: transparent;
+        }
+
+        #full-withdrawal-or-not {
+            height: 45px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        #min-tax-or-not {
+            margin-top: 30px; font-weight:bold; text-align:center;
         }
 
         /*         
@@ -229,7 +240,7 @@
                 </div>                
             </div>
             <input type="text" id="slider-value-2" class="slider-value-input" style="grid-row: 3; grid-column: 4;"/>
-            <div id="full-withdrawal-or-not" style="grid-row: 4; grid-column-start: 1; grid-column-end: 5; height: 45px; margin-top: 20px; font-weight:bold;"></div>
+            <div id="full-withdrawal-or-not" style="grid-row: 4; grid-column-start: 1; grid-column-end: 5;"></div>
         </div>
 
         <div class="arrow"><p style="grid-row:2">➡️</p></div>
@@ -237,19 +248,19 @@
         <div class="buckets">
             <div class="bucket-label">Withdrawals taxed at 0%</div>
             <div class="bucket-container">
-                <div class="bucket-fill" id="zero-percent-bucket" style="height: 0%;"></div>
+                <div class="bucket-fill" id="zero-percent-bucket"></div>
             </div>
             <input type="text" id="zero-percent-value" class="bucket-value-numeric" readonly/>
             <input type="text" id="zero-percent-tax" class="bucket-value-numeric" style="margin-bottom:25px;" readonly/>
             <div class="bucket-label">Withdrawals taxed at 10%</div>
             <div class="bucket-container">
-                <div class="bucket-fill" id="ten-percent-bucket" style="height: 0%;"></div>
+                <div class="bucket-fill" id="ten-percent-bucket"></div>
             </div>
             <input type="text" id="ten-percent-value" class="bucket-value-numeric" readonly/>
             <input type="text" id="ten-percent-tax" class="bucket-value-numeric" style="margin-bottom:25px;" readonly/>
             <div class="bucket-label">Withdrawals taxed at 12%</div>
             <div class="bucket-container">
-                <div class="bucket-fill"  id="twelve-percent-bucket" style="height: 0%;"></div>
+                <div class="bucket-fill"  id="twelve-percent-bucket"></div>
             </div>
             <input type="text" id="twelve-percent-value" class="bucket-value-numeric" readonly/>
             <input type="text" id="twelve-percent-tax" class="bucket-value-numeric" style="margin-bottom:25px;" readonly/>
@@ -260,7 +271,7 @@
         <div class="results">
             <div style="grid-row: 2; font-weight:bold">Total tax paid on all withdrawals</div>
             <input type="text" id="total-tax" class="total-tax" style="grid-row: 3; font-weight:bold; font-size: 20px;" readonly/>
-            <div style="grid-row: 4; margin-top: 30px; font-weight:bold; text-align:center" id="min-tax-or-not"></div>
+            <div style="grid-row: 4;" id="min-tax-or-not"></div>
         </div>
     </div>
 
