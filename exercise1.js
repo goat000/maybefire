@@ -1,3 +1,30 @@
+    // Don't let the total withdrawal amount go beyond the overall target.
+    // I passed in currentSliderValues to make this unit testable, but I sort of regret it.  Now,
+    // in both places I call this, I have to build a currentSliderValues and pass it, rather than
+    // just building it once in this function.  But for the sake of trying things out, I'm leaving
+    // the unit test, and this slightly unnatural-feeling structure.
+    function restrictWithdrawalToMax(index, proposedValue, currentSliderValues) {
+        var allowedValue = proposedValue;
+        var total = 0;
+
+        // Calculate the total of the sldiers that aren't the current one
+        // $(".slider-vertical").each(function(i) {
+        for (i in currentSliderValues) {
+            if (parseInt(i) !== index) { // Exclude the current slider
+                total += currentSliderValues[i];
+            }
+        }
+
+        var maxAllowedValue = 100000 - total; // Maximum value allowed for the current slider
+
+        // If the proposed value is greater than the max allowed value, adjust it
+        if (proposedValue > maxAllowedValue) {
+            allowedValue = maxAllowedValue;
+        }
+
+        return allowedValue; // Return the adjusted value for the slider
+    }
+
 $(function() {
     const fullWithdrawalAmount = 100000;
     const minTax = 1240;
@@ -102,28 +129,6 @@ $(function() {
         } 
     }
 
-    // Don't let the total withdrawal amount go beyond the overall target.
-    function restrictWithdrawalToMax(index, proposedValue) {
-        var allowedValue = proposedValue;
-        var total = 0;
-
-        // Calculate the total of the first three sliders
-        $(".slider-vertical").each(function(i) {
-            if (i !== index) { // Exclude the current slider
-                total += $(this).slider("value");
-            }
-        });
-
-        var maxAllowedValue = 100000 - total; // Maximum value allowed for the current slider
-
-        // If the proposed value is greater than the max allowed value, adjust it
-        if (proposedValue > maxAllowedValue) {
-            allowedValue = maxAllowedValue;
-        }
-
-        return allowedValue; // Return the adjusted value for the slider
-    }
-
     // Create jQuery UI sliders inside slider divs
     $(".slider-vertical").each(function(i) {
         var sliderId = 'slider-vertical-' + i;
@@ -138,7 +143,12 @@ $(function() {
             step: withdrawalStep,
             slide: function(event, ui) {
                 var requestedValue = ui.value;
-                var adjustedValue = restrictWithdrawalToMax(i, requestedValue);
+
+                var currentValues = [];
+                $(".slider-vertical").each(function(i) {
+                    currentValues[i] = $(this).slider("value");
+                });
+                var adjustedValue = restrictWithdrawalToMax(i, requestedValue, currentValues);
 
                 // If the adjusted value is different from the proposed value, prevent the
                 // slide.
@@ -178,7 +188,12 @@ $(function() {
                 $(this).val(0);
             } 
 
-            var adjustedValue = restrictWithdrawalToMax(i, value);
+
+            var currentValues = [];
+            $(".slider-vertical").each(function(i) {
+                currentValues[i] = $(this).slider("value");
+            });
+            var adjustedValue = restrictWithdrawalToMax(i, value, currentValues);
 
             adjustedValue = Math.round(adjustedValue / withdrawalStep) * withdrawalStep;
             
