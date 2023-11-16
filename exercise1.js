@@ -16,13 +16,28 @@ $(function() {
     const fullWithdrawalText = "You are withdrawing the full amount. ✔️";
     const partialWithdrawalText = "You are not withdrawing the full amount.<br>  Move the sliders until they add up to $100,000.";
     const optimalTax = "You are paying the lowest possible income tax on your $100,000 withdrawal.  <div style='font-size: 25px'>You Win!✔️</div>";
-    const suboptimalTax = "You are paying <em>more</em> income tax than you have to.  Play with the sliders!";
+    const suboptimalTax = "You are paying more income tax than you have to.  Play with the sliders!";
 
     const usDollar = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
         maximumFractionDigits: 0
     });
+
+    // Init all values/displays.  Some of this could be done just by calling updateX() functions,
+    // but calls to get slider values error out before the sliders are initialized.
+    $('#zero-percent-bucket').height(100 * initialBucketValues[0] / sizeOf0Bucket + '%');
+    $('#ten-percent-bucket').height(100 * initialBucketValues[1] / sizeOf10Bucket + '%');
+    $('#twelve-percent-bucket').height(100 * initialBucketValues[2] / sizeOf12Bucket + '%');
+    $('#zero-percent-value').val("Withdrawal: " + usDollar.format(initialBucketValues[0]));
+    $('#ten-percent-value').val("Withdrawal: " + usDollar.format(initialBucketValues[1]));
+    $('#twelve-percent-value').val("Withdrawal: " + usDollar.format(initialBucketValues[2]));
+    $('#total-tax').val(usDollar.format(initialTax));
+    $('#full-withdrawal-or-not').html(fullWithdrawalText);
+    $('#min-tax-or-not').html(suboptimalTax);
+    $('#zero-percent-tax').val("Tax: " + usDollar.format(initialTaxPerBucket[0]));
+    $('#ten-percent-tax').val("Tax: " + usDollar.format(initialTaxPerBucket[1]));
+    $('#twelve-percent-tax').val("Tax: " + usDollar.format(initialTaxPerBucket[2]));
 
     function updateSliderHandles() {
         $(".slider-vertical").each(function() {
@@ -31,9 +46,9 @@ $(function() {
         });
     }
 
-    // Return the overall tax amount as an int, so we don't have  to parse the
-    // currency-formatted value in #total-tax.
-    function updateBuckets() {
+    // Update bucket fills, total tax, and messaging.
+    function updateTaxOutcomes() {
+        var totalWithdrawal = 0;
         var amountIn0Bucket = 0;
         var amountIn10Bucket = 0;
         var amountIn12Bucket = 0;
@@ -44,6 +59,7 @@ $(function() {
 
         $(".slider-vertical").each(function() {
             var value = $(this).slider("value");
+            totalWithdrawal += value;
             amountIn0Bucket += Math.min(value, 29200);
             amountIn10Bucket += Math.max(0, Math.min(value - 29200, 23200));
             amountIn12Bucket += Math.max(0, Math.min(value - 52400, 71100));
@@ -67,11 +83,6 @@ $(function() {
 
         $('#total-tax').val(usDollar.format(overallTax));
 
-        return overallTax;
-    }
-
-    function updateTextMessages(overallTax) {
-        var totalWithdrawal = $('#slider-vertical-0').slider("value") + $('#slider-vertical-1').slider("value") + $('#slider-vertical-2').slider("value");
         if (totalWithdrawal == fullWithdrawalAmount) {
             $('#full-withdrawal-or-not').html(fullWithdrawalText);
 
@@ -113,6 +124,7 @@ $(function() {
         return allowedValue; // Return the adjusted value for the slider
     }
 
+    // Create jQuery UI sliders inside slider divs
     $(".slider-vertical").each(function(i) {
         var sliderId = 'slider-vertical-' + i;
         var sliderValueId = 'slider-value-' + i;                
@@ -138,10 +150,10 @@ $(function() {
                 // before calling the update functions as a simple way to avoid them working on 
                 // numbers from before this event.  And it doesn't seem to hurt anything.
                 $(this).slider("value", adjustedValue);
+
                 $('#' + sliderValueId).val(usDollar.format(adjustedValue));
                 updateSliderHandles();
-                overallTax = updateBuckets();
-                updateTextMessages(overallTax);
+                updateTaxOutcomes();
             },
             create: function(event, ui) {
                 var initialValue = $(this).slider("value");
@@ -151,7 +163,7 @@ $(function() {
             }
         });
 
-        // Also allow changing the withdrawal values via text box
+        // Allow changing the withdrawal values via text box
         $('#' + sliderValueId).on('change', function() {
             // Hacky, but since we're hardcoded to one USD format, I don't feel _so_ bad.
             // Intl.NumberFormat doesn't have a parse() method :-(
@@ -166,7 +178,6 @@ $(function() {
                 $(this).val(0);
             } 
 
-
             var adjustedValue = restrictWithdrawalToMax(i, value);
 
             adjustedValue = Math.round(adjustedValue / withdrawalStep) * withdrawalStep;
@@ -175,23 +186,7 @@ $(function() {
 
             $('#' + sliderId).slider("value", adjustedValue);
             updateSliderHandles();
-            overallTax = updateBuckets();
-            updateTextMessages(overallTax);
+            updateTaxOutcomes();
         });
-
-        // updateBuckets errors out if called before the sliders are initialized,
-        // so just set hardcoded values initially.
-        $('#zero-percent-bucket').height(100 * initialBucketValues[0] / sizeOf0Bucket + '%');
-        $('#ten-percent-bucket').height(100 * initialBucketValues[1] / sizeOf10Bucket + '%');
-        $('#twelve-percent-bucket').height(100 * initialBucketValues[2] / sizeOf12Bucket + '%');
-        $('#zero-percent-value').val("Withdrawal: " + usDollar.format(initialBucketValues[0]));
-        $('#ten-percent-value').val("Withdrawal: " + usDollar.format(initialBucketValues[1]));
-        $('#twelve-percent-value').val("Withdrawal: " + usDollar.format(initialBucketValues[2]));
-        $('#total-tax').val(usDollar.format(initialTax));
-        $('#full-withdrawal-or-not').html(fullWithdrawalText);
-        $('#min-tax-or-not').html(suboptimalTax);
-        $('#zero-percent-tax').val("Tax: " + usDollar.format(initialTaxPerBucket[0]));
-        $('#ten-percent-tax').val("Tax: " + usDollar.format(initialTaxPerBucket[1]));
-        $('#twelve-percent-tax').val("Tax: " + usDollar.format(initialTaxPerBucket[2]));
     });
 });
