@@ -66,6 +66,7 @@
             width: 100%;
             left: 0;
             margin-left: 0;
+            box-sizing: border-box; /* Keeps handle from being shifted to the right a couple px*/
         }
 
         .slider-label {
@@ -232,8 +233,8 @@
             const initialTax = 2160; 
 
             const fullWithdrawalText = "You are withdrawing the full amount. ✔️";
-            const partialWithdrawalText = "You are not withdrawing the full amount.<br>  Move the sliders until they add up to 100,000.";
-            const optimalTax = "You are paying the lowest possible amount of income tax.  <div style='font-size: 25px'>You Win!✔️</div>";
+            const partialWithdrawalText = "You are not withdrawing the full amount.<br>  Move the sliders until they add up to $100,000.";
+            const optimalTax = "You are paying the lowest possible income tax on your $100,000 withdrawal.  <div style='font-size: 25px'>You Win!✔️</div>";
             const suboptimalTax = "You are paying <em>more</em> income tax than you have to.  Play with the sliders!";
 
             const usDollar = new Intl.NumberFormat('en-US', {
