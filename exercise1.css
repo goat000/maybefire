@@ -88,7 +88,7 @@ body {
     position: absolute;
     bottom: 0;
     width: 100%;
-    background: url('stack_of_money_recurring.png') repeat-y;
+    background: url('hundred_dollar_bills.jpg') repeat-y;
     background-position: bottom; /* So that the background image looks like it is being
                                     revealed, rather than like it is a curtain being pulled
                                     up. */
